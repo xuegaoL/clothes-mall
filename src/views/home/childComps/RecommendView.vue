@@ -23,7 +23,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .recommend {
     display: flex;
     width: 100%;
@@ -39,6 +39,6 @@
   .recommend-item img {
     width: 70px;
     height: 70px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 </style>

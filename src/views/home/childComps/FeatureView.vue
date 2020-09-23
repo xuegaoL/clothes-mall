@@ -11,8 +11,12 @@
   }
 </script>
 
-<style>
-  .feature img {
+<style scoped>
+  .feature{
+    display: flex;
+  }
+ .feature img {
     width: 100%;
+    flex: 1;
   }
 </style>
