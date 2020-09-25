@@ -1,5 +1,5 @@
 <template>
-  <div id="detail">
+  <div>
     <nav-bar>
       <div slot="left" class="back" @click="backClick">
         <img src="~assets/img/common/back.svg" alt="">
