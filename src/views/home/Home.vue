@@ -40,6 +40,7 @@
 
   import {getHomeMultidata, getHomeGoods} from "network/home"
   import {debounce} from 'common/utils'
+  import {itemListListenerMixin} from "common/mixin";
 
   export default {
     name: "Home",
@@ -53,6 +54,7 @@
       Scroll,
       BackTop
     },
+    mixins: [itemListListenerMixin],
     data() {
       return {
         banners: [],
@@ -79,7 +81,11 @@
       this.$refs.scroll.refresh()
     },
     deactivated() {
+      //1.保存Y值
       this.saveY = this.$refs.scroll.getScrollY();
+
+      //2.取消全局事件监听
+      this.$bus.$off('itemImageLoad', this.itemListListener)
     },
     created() {
       //1.请求多个数据
@@ -91,11 +97,7 @@
       this.getHomeGoods('sell')
     },
     mounted() {
-      //1.图片加载完成的事件监听
-      const refresh = debounce(this.$refs.scroll.refresh, 50)
-      this.$bus.$on('itemImageLoad', () => {
-        refresh()
-      })
+
     },
     methods: {
       /**
