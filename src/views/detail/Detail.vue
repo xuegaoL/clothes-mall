@@ -2,6 +2,9 @@
   <div id="detail">
     <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav"/>
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+      <ul>
+      	<li v-for="item in $store.state.cartList">{{item}}</li>
+      </ul>
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
@@ -11,6 +14,8 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goods="recommends"/>
     </scroll>
+    <detail-bottom-bar @addCart="addToCart"/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -22,13 +27,14 @@
   import DetailGoodsInfo from './childComps/DetailGoodsInfo'
   import DetailParamInfo from './childComps/DetailParamInfo'
   import DetailCommentInfo from './childComps/DetailCommentInfo'
+  import DetailBottomBar from './childComps/DetailBottomBar'
 
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
 
   import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail";
   import {debounce} from "common/utils";
-  import {itemListListenerMixin} from "common/mixin";
+  import {itemListListenerMixin, backTopMixin} from "common/mixin";
   export default {
     name: "Detail",
     components: {
@@ -39,10 +45,11 @@
       DetailGoodsInfo,
       DetailParamInfo,
       DetailCommentInfo,
+      DetailBottomBar,
       Scroll,
       GoodsList
     },
-    mixins: [itemListListenerMixin],
+    mixins: [itemListListenerMixin, backTopMixin],
     data() {
       return {
         iid: null,
@@ -157,6 +164,22 @@
           }
         }
 
+        //3.是否显示回到顶部
+        this.listenShowBackTop(position)
+      },
+      addToCart() {
+        //1.获取购物车需要展示的信息
+        const product = {}
+        product.image = this.topImages[0];
+        product.title = this.goods.title;
+        product.desc = this.goods.desc;
+        product.price = this.goods.realPrice;
+        product.iid = this.iid;
+
+        //2.将商品添加到购物车
+        // this.$store.cartList.push(product)
+        // this.$store.commit('addCart', product)
+        this.$store.dispatch('addCart', product)
       }
     }
   }
@@ -177,7 +200,7 @@
   }
 
  .content {
-   height: calc(100% - 44px);
+   height: calc(100% - 44px - 49px);
    overflow: hidden;
  }
 </style>
